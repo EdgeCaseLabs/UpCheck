@@ -23,6 +23,6 @@ This small app will attempt to connect to your databases and verify that your Wi
 
 4. Publish the up.ashx and Web.config files to an IIS Virtual Directory (default web.config is ASP.NET 4).
 
-5. Setup an HTTP monitor (i.e. binarycanary.com) to hit the up.ashx periodically. A `200` response means that no exceptions where thrown. A `500` means an exception was encountered.
+5. Setup an HTTP monitor (i.e. binarycanary.com) to hit the up.ashx periodically. A `200` response means that no exceptions were thrown. A `500` means an exception was encountered.
 
 
