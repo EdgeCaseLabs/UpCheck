@@ -8,6 +8,9 @@ using System.Configuration;
 
 namespace UpCheck
 {
+    /// <summary>
+    /// Loop through all defined remote services and validate that the state matches what is expected.
+    /// </summary>
     public class RemoteServiceChecker
     {
         public static void Validate()
@@ -30,7 +33,6 @@ namespace UpCheck
             options.Authority = settings.Authority;
             
             var scope = new ManagementScope(settings.Path, options);
-            //var scope = new ManagementScope();
 
             scope.Connect();
 

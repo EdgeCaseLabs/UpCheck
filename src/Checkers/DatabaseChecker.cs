@@ -8,11 +8,11 @@ using System.Data.SqlClient;
 
 namespace UpCheck
 {
+    /// <summary>
+    /// Loop through all connection strings and validate that a connection can be opened.
+    /// </summary>
     public class DatabaseChecker
     {
-        /// <summary>
-        /// Loop through all connection strings and validate that a connection can be opened.
-        /// </summary>
         public static void Validate()
         {
             Logging.TraceEvent(TraceEventType.Information, 10, "BEGIN DatabaseChcker Validation");
@@ -30,9 +30,10 @@ namespace UpCheck
                     if (conn.State == System.Data.ConnectionState.Open)
                     {
                         conn.Close();
-                        conn.Dispose();
                         Logging.TraceEvent(TraceEventType.Information, 10, "{0}: closed", ConfigurationManager.ConnectionStrings[i].Name);
                     }
+
+                    conn.Dispose();
                 }
             }
             Logging.TraceEvent(TraceEventType.Information, 10, "END DatabaseChcker Validation");
