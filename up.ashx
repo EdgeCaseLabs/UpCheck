@@ -15,8 +15,8 @@ namespace UpCheck
         {
             try
             {
-                RemoteServiceChecker.Validate();
                 DatabaseChecker.Validate();
+                RemoteServiceChecker.Validate();
                 
                 context.Response.ContentType = "text/plain";
                 context.Response.Write("OK: Everything's peachy!");

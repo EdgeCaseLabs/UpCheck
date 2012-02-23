@@ -10,6 +10,8 @@ This small app will attempt to connect to your server's Windows Services and dat
 1. Add your remote service monitoring details to the `remoteServices` section of the Web.config:
 
 		<remoteServices>		  <add name="SQLSERVERAGENT"        	path="\\server\root\CIMV2"	        username=".\user"    	    password="password"        	authority=""	        state="running"/>		  <add name="MSSQLSERVER"        	path="\\server\root\CIMV2"	        username=".\user"    	    password="password"        	authority=""	        state="running"/>		</remoteServices>
+Use Start > Run > WBEMTEST to help test for valid path/username/password/authority settings.
+
 
 2. Add your database connection string to the `connectionStrings` section of the Web.config:
 

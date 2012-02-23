@@ -145,22 +145,14 @@ namespace UpCheck
 
     public sealed class RemoteServiceSettings : ConfigurationElement
     {
-        //private static readonly ConfigurationProperty _propName = new ConfigurationProperty("name", typeof(string), (object)null);//, (TypeConverter)null, ConfigurationProperty.NonEmptyStringValidator, ConfigurationPropertyOptions.IsRequired | ConfigurationPropertyOptions.IsKey);
-        private static readonly ConfigurationProperty _propName = new ConfigurationProperty("name", typeof(string), (object)string.Empty, ConfigurationPropertyOptions.IsRequired);
+        private static readonly ConfigurationProperty _propKey = new ConfigurationProperty("key", typeof(string), (object)null, (TypeConverter)null, null, ConfigurationPropertyOptions.IsRequired | ConfigurationPropertyOptions.IsKey);
+        private static readonly ConfigurationProperty _propServiceName = new ConfigurationProperty("serviceName", typeof(string), (object)string.Empty, ConfigurationPropertyOptions.IsRequired);
         private static readonly ConfigurationProperty _propUsername = new ConfigurationProperty("username", typeof(string), (object)string.Empty, ConfigurationPropertyOptions.IsRequired);
         private static readonly ConfigurationProperty _propPassword = new ConfigurationProperty("password", typeof(string), (object)string.Empty, ConfigurationPropertyOptions.IsRequired);
         private static readonly ConfigurationProperty _propAuthority = new ConfigurationProperty("authority", typeof(string), (object)string.Empty, ConfigurationPropertyOptions.IsRequired);
         private static readonly ConfigurationProperty _propPath = new ConfigurationProperty("path", typeof(string), (object)string.Empty, ConfigurationPropertyOptions.IsRequired);
         private static readonly ConfigurationProperty _propState = new ConfigurationProperty("state", typeof(string), (object)string.Empty, ConfigurationPropertyOptions.IsRequired);
         private static ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
-
-        internal string Key
-        {
-            get
-            {
-                return this.Name;
-            }
-        }
 
         protected override ConfigurationPropertyCollection Properties
         {
@@ -170,17 +162,29 @@ namespace UpCheck
             }
         }
 
-
-        [ConfigurationProperty("name", DefaultValue = "", Options = ConfigurationPropertyOptions.IsRequired | ConfigurationPropertyOptions.IsKey)]
-        public string Name
+        [ConfigurationProperty("key", DefaultValue = "", Options = ConfigurationPropertyOptions.IsRequired | ConfigurationPropertyOptions.IsKey)]
+        public string Key
         {
             get
             {
-                return (string)this[RemoteServiceSettings._propName];
+                return (string)this[RemoteServiceSettings._propKey];
             }
             set
             {
-                this[RemoteServiceSettings._propName] = (object)value;
+                this[RemoteServiceSettings._propKey] = (object)value;
+            }
+        }
+
+        [ConfigurationProperty("serviceName", DefaultValue = "", Options = ConfigurationPropertyOptions.IsRequired)]
+        public string ServiceName
+        {
+            get
+            {
+                return (string)this[RemoteServiceSettings._propServiceName];
+            }
+            set
+            {
+                this[RemoteServiceSettings._propServiceName] = (object)value;
             }
         }
 
@@ -253,7 +257,8 @@ namespace UpCheck
 
         static RemoteServiceSettings()
         {
-            RemoteServiceSettings._properties.Add(RemoteServiceSettings._propName);
+            RemoteServiceSettings._properties.Add(RemoteServiceSettings._propKey);
+            RemoteServiceSettings._properties.Add(RemoteServiceSettings._propServiceName);
             RemoteServiceSettings._properties.Add(RemoteServiceSettings._propUsername);
             RemoteServiceSettings._properties.Add(RemoteServiceSettings._propPassword);
             RemoteServiceSettings._properties.Add(RemoteServiceSettings._propPath);
@@ -267,7 +272,7 @@ namespace UpCheck
 
         public override string ToString()
         {
-            return this.Name;
+            return this.Key;
         }
     }
 }

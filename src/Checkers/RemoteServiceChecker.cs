@@ -18,7 +18,7 @@ namespace UpCheck
             Logging.TraceEvent(TraceEventType.Information, 10, "BEGIN RemoteServiceChecker Validation");
             for (int i = 0; i < SettingsManager.RemoteServices.Count; i++)
             {
-                Logging.TraceEvent(TraceEventType.Information, 10, "RemoteServiceChecker: {0}", SettingsManager.RemoteServices[i].Name);
+                Logging.TraceEvent(TraceEventType.Information, 10, "RemoteServiceChecker: {0}", SettingsManager.RemoteServices[i].ServiceName);
                 
                 checkService(SettingsManager.RemoteServices[i]);
             }
@@ -27,16 +27,31 @@ namespace UpCheck
 
         private static void checkService(RemoteServiceSettings settings)
         {
-            var options = new ConnectionOptions();
-            options.Username = settings.Username;
-            options.Password = settings.Password;
-            options.Authority = settings.Authority;
-            
-            var scope = new ManagementScope(settings.Path, options);
+            ManagementScope scope = null;
+            if (settings.Path != null && settings.Path.Trim().Length > 0)
+            {
+                ConnectionOptions options = null;
+                if (settings.Username != null && settings.Username.Trim().Length > 0)
+                {
+                    options = new ConnectionOptions();
+                    options.Username = settings.Username;
+                    options.Password = settings.Password;
+                    if (settings.Authority.Trim().Length > 0)
+                    {
+                        options.Authority = settings.Authority;
+                    }
+                }
+
+                scope = new ManagementScope(settings.Path, options);
+            }
+            else
+            {
+                scope = new ManagementScope();
+            }
 
             scope.Connect();
 
-            ObjectQuery query = new ObjectQuery(string.Format("SELECT * FROM Win32_Service WHERE Name = '{0}'", settings.Name));
+            ObjectQuery query = new ObjectQuery(string.Format("SELECT * FROM Win32_Service WHERE Name = '{0}'", settings.ServiceName));
 
             using (var searcher = new ManagementObjectSearcher(scope, query))
             {
@@ -46,11 +61,11 @@ namespace UpCheck
                     found = true;
                     if (settings.State.ToLower() != queryObj["State"].ToString().ToLower())
                     {
-                        throw new Exception(string.Format("Service {0} was not in expected state {1}; actual state: {2}", settings.Name, settings.State, queryObj["State"]));
+                        throw new Exception(string.Format("Service {0} was not in expected state {1}; actual state: {2}", settings.ServiceName, settings.State, queryObj["State"]));
                     }
                     else
                     {
-                        Logging.TraceEvent("Service {0} was in expected state {1}", settings.Name, settings.State);
+                        Logging.TraceEvent("Service {0} was in expected state {1}", settings.ServiceName, settings.State);
                     }
                     //Logging.TraceEvent(string.Format("Caption: {0}", queryObj["Caption"]));
                     //Logging.TraceEvent(string.Format("Description: {0}", queryObj["Description"]));
@@ -61,8 +76,8 @@ namespace UpCheck
                 }
                 if (!found)
                 {
-                    Logging.TraceEvent("Unable to find service {0}", settings.Name);
-                    throw new Exception(string.Format("Unable to find service {0}", settings.Name));
+                    Logging.TraceEvent("Unable to find service {0}", settings.ServiceName);
+                    throw new Exception(string.Format("Unable to find service {0}", settings.ServiceName));
                 }
             }
         }
